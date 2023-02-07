@@ -59,7 +59,6 @@ def parse_file(burpreq):
                 for kv in keyval:
                         kv = kv.split('=')
                         data[kv[0]] = kv[1]
-                print(data)
         except Exception:
                 data = False
         return url, method, headers, data
