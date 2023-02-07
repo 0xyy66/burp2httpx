@@ -14,27 +14,29 @@ def write_file(outputfile, code):
                 f.write(code)
 
 def gen_code(url, method, headers, data):
-        headers_str = '\t{\n'
+        headers_str = '{\n'
         for k,v in headers.items():
                 headers_str += f'\t\t"{k}": "{v}",\n'
         headers_str += '\t}'
         code = f'''import requests
 
 with requests.Session() as s:
-        s.headers = {headers_str}
+\ts.headers = {headers_str}
 '''
         if data:
-                data_str = '\t{\n'
+                data_str = '{\n'
                 for k,v in data.items():
                         data_str += f'\t\t"{k}": "{v}",\n'
                 data_str += '\t}'
-                code += f'''\tdata = {data_str}
-        res = s.{method.lower()}('{url}', data=data)
-        print(res.status_code)
+                code += f'''
+\tdata = {data_str}
+\tres = s.{method.lower()}('{url}', data=data)
+\tprint(res.status_code)
 '''
         else:
-                code += f'''res = s.{method.lower()}('{url}')
-        print(res.status_code)
+                code += f'''
+\tres = s.{method.lower()}('{url}')
+\tprint(res.status_code)
 '''
         return code
 
@@ -48,8 +50,8 @@ def parse_file(burpreq):
         while burplines[i] != '':
                 for i in range(2, len(burplines)):
                         if ':' in burplines[i]:
-                                k = burplines[i].split(':')[0]
-                                v = burplines[i].split(':')[1].strip()
+                                k = burplines[i].split(': ')[0]
+                                v = burplines[i].split(': ')[1].strip()
                                 headers[k] = v
         body_split = burplines.index('')
         try:
